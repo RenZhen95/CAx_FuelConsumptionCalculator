@@ -45,6 +45,41 @@ namespace CAx_FuelConsumptionCalculator
         {
             // Link the BindingList in DataManger to the DataGrid
             DataGrid_LogEntries.DataSource = DataManager.BindingDriveLogEntriesList;
+
+            // Making some minor adjustments to column widths
+            DataGrid_LogEntries.Columns[0].Width = 25;
+            
+            // Changing the name of the column headerss
+            foreach (DataGridViewTextBoxColumn colHeader in DataGrid_LogEntries.Columns)
+            {
+                switch (colHeader.HeaderText)
+                {
+                    case "LKM":
+                        colHeader.HeaderText = "Liter/100km";
+                        colHeader.Width = 80;
+                        break;
+                    case "MPG":
+                        colHeader.HeaderText = "Miles/Gallon";
+                        colHeader.Width = 80;
+                        break;
+                    case "LogEntryDate":
+                        colHeader.HeaderText = "Entry Date";
+                        colHeader.Width = 83;
+                        break;
+                    case "DistanceDriven":
+                        colHeader.HeaderText = "Driven [km]";
+                        colHeader.Width = 80;
+                        break;
+                    case "FuelConsumed":
+                        colHeader.HeaderText = "Fuel Usage [Liter]";
+                        break;
+                    case "Milage":
+                        colHeader.Width = 80;
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
 
         private void Add_Btn_Click(object sender, EventArgs e)
@@ -62,6 +97,9 @@ namespace CAx_FuelConsumptionCalculator
                 if (!userInput.Item1) { return; }
                 else { InputArguments.Add(userInput.Item2); }
             }
+
+            // Add the newly created log entry into the BindingLists
+            DataManager.AddLogEntryFromUI(InputArguments);
         }
         private void fillLKMBox()
         {
