@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using MetroFramework.Forms;
+using MetroFramework.Controls;
+using System.Windows.Forms;
 
 namespace CAx_FuelConsumptionCalculator
 {
@@ -9,45 +12,9 @@ namespace CAx_FuelConsumptionCalculator
         public Form1()
         {
             InitializeComponent();
-        }
 
-        private void LKMtoMPG_Click(object sender, EventArgs e)
-        {
-            double convertedValue, nominator, denominator;
-
-            // First check the value input by the user
-            (bool, double) checkResults = checkUserInput(LiterKilometerBox.Text);
-            if (!checkResults.Item1) { return; }
-            else
-            {
-                nominator   = 62.13712;     // 100km in Miles
-                denominator = 0.26417205;   // 1 Liter in Gallons
-
-                // Convert L/100km into MpG
-                convertedValue = nominator / (denominator * checkResults.Item2);
-
-                MilesGallonBox.Text = convertedValue.ToString();
-            }
-        }
-
-        private void MPGtoLKM_Click(object sender, EventArgs e)
-        {
-            double convertedValue, nominator, denominator;
-
-            // First check the value input by the user
-            (bool, double) checkResults = checkUserInput(MilesGallonBox.Text);
-            if (!checkResults.Item1) { return; }
-            else
-            {
-                nominator   = 3.78541182;       // 1 Gallon in Liter
-                denominator = 1 / (62.13712);   // Miles in 100km
-
-                // Convert MpG into L/100km
-                convertedValue = nominator / (denominator * checkResults.Item2);
-
-                LiterKilometerBox.Text = convertedValue.ToString();
-            }
-
+            // Load the Data first from the database
+            Program.ReadFromDatabase();
         }
 
         /// <summary>
@@ -72,6 +39,75 @@ namespace CAx_FuelConsumptionCalculator
                 goodToGo = false;
                 return (goodToGo, 0.0);
             }
+        }
+
+        private void LoadData_Btn_Click(object sender, EventArgs e)
+        {
+            // Link the BindingList in DataManger to the DataGrid
+            DataGrid_LogEntries.DataSource = DataManager.BindingDriveLogEntriesList;
+        }
+
+        private void Add_Btn_Click(object sender, EventArgs e)
+        {
+            fillLKMBox();
+            fillMPGBox();
+
+            // Input arguments for the DriveLogEntry class
+            List<double> InputArguments = new List<double>();
+            // First ensure that all input values are of a valid format
+            MetroTextBox[] TextBoxFields = new MetroTextBox[] { Milage_Box, DistanceDriven_Box, Consumption_Box, LiterKilometerBox, MilesGallonBox };
+            foreach (var textBox in TextBoxFields)
+            {
+                (bool, double) userInput = checkUserInput(textBox.Text);
+                if (!userInput.Item1) { return; }
+                else { InputArguments.Add(userInput.Item2); }
+            }
+        }
+        private void fillLKMBox()
+        {
+            double LiterPer100km;
+
+            // First check the Consumption in Liter input by user
+            (bool, double) ConsumptionLiter = checkUserInput(Consumption_Box.Text);
+            // Then check the Distance Travelled in km input by user
+            (bool, double) DistanceDriven = checkUserInput(DistanceDriven_Box.Text);
+            // If user has input valid values, continue
+            if ((ConsumptionLiter.Item1) && (DistanceDriven.Item1))
+            {
+                LiterPer100km = ConsumptionLiter.Item2 / (DistanceDriven.Item2 / 100);
+                LiterKilometerBox.Text = LiterPer100km.ToString();
+            }
+            else { return; }
+        }
+        private void fillMPGBox()
+        {
+            double convertedValue, nominator, denominator;
+
+            // First check the value input by the user
+            (bool, double) checkResults = checkUserInput(LiterKilometerBox.Text);
+            if (!checkResults.Item1) { return; }
+            else
+            {
+                nominator = 62.13712;     // 100km in Miles
+                denominator = 0.26417205;   // 1 Liter in Gallons
+
+                // Convert L/100km into MpG
+                convertedValue = nominator / (denominator * checkResults.Item2);
+
+                MilesGallonBox.Text = convertedValue.ToString();
+            }
+        }
+
+        private void Delete_Btn_Click(object sender, EventArgs e)
+        {
+            // If user has not selectd any row, simply do nothing
+            if (DataGrid_LogEntries.SelectedRows.Count == 0) { return; }
+
+            // Else, delete the selected row (log entry)
+            DriveLogEntry _logEntry = (DriveLogEntry)DataGrid_LogEntries.SelectedRows[0].DataBoundItem;
+            // Simply do nothing if it's null
+            if (_logEntry == null) { return; }
+            else { DataManager.DeleteLogEntry(_logEntry); }
         }
     }
 }
