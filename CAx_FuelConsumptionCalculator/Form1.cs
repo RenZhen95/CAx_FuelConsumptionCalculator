@@ -56,25 +56,19 @@ namespace CAx_FuelConsumptionCalculator
                 {
                     case "LKM":
                         colHeader.HeaderText = "Liter/100km";
-                        colHeader.Width = 80;
                         break;
                     case "MPG":
                         colHeader.HeaderText = "Miles/Gallon";
-                        colHeader.Width = 80;
                         break;
                     case "LogEntryDate":
                         colHeader.HeaderText = "Entry Date";
-                        colHeader.Width = 83;
                         break;
                     case "DistanceDriven":
                         colHeader.HeaderText = "Driven [km]";
-                        colHeader.Width = 80;
                         break;
                     case "FuelConsumed":
                         colHeader.HeaderText = "Fuel Usage [Liter]";
-                        break;
-                    case "Milage":
-                        colHeader.Width = 80;
+                        colHeader.Width = 90;
                         break;
                     default:
                         break;
@@ -146,6 +140,19 @@ namespace CAx_FuelConsumptionCalculator
             // Simply do nothing if it's null
             if (_logEntry == null) { return; }
             else { DataManager.DeleteLogEntry(_logEntry); }
+        }
+
+        private void DataGrid_LogEntries_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            // Accessing the log entry that has been modified. e corresponds to the cell with the value changed
+            try 
+            { 
+                DriveLogEntry changedLogEntry = DataManager.BindingDriveLogEntriesList[e.RowIndex];
+
+                // Updating the Database
+                Program.UpdateDatabase(changedLogEntry);
+            }
+            catch (ArgumentOutOfRangeException e2) { return; }
         }
     }
 }

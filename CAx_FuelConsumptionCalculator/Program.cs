@@ -20,6 +20,10 @@ namespace CAx_FuelConsumptionCalculator
             Application.Run(new Form1());
         }
 
+        /// <summary>
+        /// Static method to create new entity in the database
+        /// </summary>
+        /// <param name="_logEntry"></param>
         public static void CreateInDatabase(DriveLogEntry _logEntry)
         {
             using (DatabaseContext _context = new DatabaseContext())
@@ -29,6 +33,10 @@ namespace CAx_FuelConsumptionCalculator
             }
         }
 
+        /// <summary>
+        /// Static method to first convert the DatabaseSet DriveLogs into a list. 
+        /// The list is then looped through and elements sequentially added to the BindingList
+        /// </summary>
         public static void ReadFromDatabase()
         {
             using (DatabaseContext _context = new DatabaseContext())
@@ -41,6 +49,13 @@ namespace CAx_FuelConsumptionCalculator
             }
         }
 
+        /// <summary>
+        /// Static method to update the database when any log entry has been modified.
+        /// First receives the selected entity (log entry) and extracts the corresponding 
+        /// entity in the DbContext based on the ID. Each of the attributes are then updated 
+        /// and the DbContext is marked is "modified". Changes are then saved.
+        /// </summary>
+        /// <param name="_logEntry"></param>
         public static void UpdateDatabase(DriveLogEntry _logEntry)
         {
             using (DatabaseContext _context = new DatabaseContext())
@@ -61,6 +76,10 @@ namespace CAx_FuelConsumptionCalculator
             }
         }
 
+        /// <summary>
+        /// Static method to delete the selected entity from the database.
+        /// </summary>
+        /// <param name="_logEntry"></param>
         public static void DeleteFromDatabase(DriveLogEntry _logEntry)
         {
             using (DatabaseContext _context = new DatabaseContext())
@@ -77,7 +96,6 @@ namespace CAx_FuelConsumptionCalculator
                 _context.SaveChanges();
             }
         }
-
         private static DriveLogEntry findEntityInDatabase(int _id)
         {
             using (DatabaseContext _context = new DatabaseContext())

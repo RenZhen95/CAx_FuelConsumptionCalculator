@@ -134,7 +134,9 @@
             // 
             // DataGrid_LogEntries
             // 
+            this.DataGrid_LogEntries.AllowUserToResizeColumns = false;
             this.DataGrid_LogEntries.AllowUserToResizeRows = false;
+            this.DataGrid_LogEntries.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.DataGrid_LogEntries.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
             this.DataGrid_LogEntries.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.DataGrid_LogEntries.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
@@ -174,6 +176,7 @@
             this.DataGrid_LogEntries.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.DataGrid_LogEntries.Size = new System.Drawing.Size(577, 150);
             this.DataGrid_LogEntries.TabIndex = 6;
+            this.DataGrid_LogEntries.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGrid_LogEntries_CellValueChanged);
             // 
             // metroLabel3
             // 
